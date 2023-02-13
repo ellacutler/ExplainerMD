@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Navbar from '../Components/Navbar';
 
-const Home = () => {
+const Assistant = () => {
   const [count, setCount] = useState(0);
 
   return (
@@ -14,4 +14,4 @@ const Home = () => {
   );
 }
 
-export default Home
+export default Assistant;
