@@ -1,0 +1,547 @@
+// within index.js, have to change the api key and other config! 
+
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/functions";
+import { getDatabase, connectDatabaseEmulator } from "firebase/database";
+//import RushEvents from "./Components/Landing/RushEvents";
+import { getStorage, connectStorageEmulator } from "firebase/storage";
+
+const firebaseConfig = {
+  apiKey: "kjhks",
+  authDomain: "badhabits-dating.firebaseapp.com",
+  databaseURL: "https://badhabits-dating-default-rtdb.firebaseio.com",
+  projectId: "badhabits-dating",
+  storageBucket: "badhabits-dating.appspot.com",
+  messagingSenderId: "300182789945",
+  appId: "1:300182789945:web:3f78d0da4f17f9b88812e8"
+}; 
+
+const app = firebase.initializeApp(firebaseConfig);
+var provider = new firebase.auth.GoogleAuthProvider();
+var provider = new firebase.auth.GoogleAuthProvider();
+provider.addScope("https://www.googleapis.com/auth/userinfo.profile");
+
+ 
+ 
+ 
+ 
+ // within a component 
+ constructor(props) {
+    super(props);
+    this.uid = "";
+  }
+  componentDidMount() {
+    this.props.firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.uid = user.uid;
+      }
+    });
+    
+    
+ /// authentication page/login reference : 
+ 
+import React from "react";
+import { ref, child, get, update } from "firebase/database";
+import { uploadBytes } from "firebase/storage";
+import { ref as sRef, getDownloadURL } from "firebase/storage";
+import Swal from "sweetalert2";
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+class SignUp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { selected: [] };
+    this.clickButton = this.clickButton.bind(this);
+    this.completeSignup = this.completeSignup.bind(this);
+    this.uploadedPic = false;
+  }
+
+  async completeSignup() {
+    if (this.state.selected.length < 3) {
+      Swal.fire({
+        icon: "error",
+        title: "You must select at least 3 habits!",
+      });
+    } else {
+      const uid = sessionStorage.getItem("uid");
+      var newDict;
+      if (this.uploadedPic) {
+        newDict = {
+          name:
+            document.getElementById("first-name").value +
+            " " +
+            document.getElementById("last-name").value,
+          gender: document.getElementById("gender").value,
+          gender_pref: document.getElementById("gender-pref").value,
+          about: document.getElementById("about").value,
+          habits: this.state.selected,
+          phone: document.getElementById("phone").value,
+        };
+      } else {
+        newDict = {
+          name:
+            document.getElementById("first-name").value +
+            " " +
+            document.getElementById("last-name").value,
+          gender: document.getElementById("gender").value,
+          gender_pref: document.getElementById("gender-pref").value,
+          about: document.getElementById("about").value,
+          habits: this.state.selected,
+          phone: document.getElementById("phone").value,
+          profile_pic_link: sessionStorage.getItem("profPicSrc"),
+        };
+      }//window.location.href = "https://www.badhabits.dating/app";
+      update(ref(this.props.database, "users/" + uid), newDict).then((res) => {
+        this.props.firebase
+                .functions()
+                .httpsCallable("makeMatches")({user:newDict,uid:uid,
+                }).then((res) => {window.location.href="https://www.badhabits.dating/app"})
+        Swal.fire({
+          icon: "success",
+          title: "Get ready to find true love",
+          text: "Generating your first matches...",
+          timer: 18500,
+        timerProgressBar: false,
+        allowOutsideClick:false,
+        allowEscapeKey:false,
+        allowEnterKey:false,
+        })
+        Swal.showLoading();
+      });
+    }
+  }
+  clickButton(name) {
+    if (this.state.selected.length == 3) {
+      const old_button_id = this.state.selected.shift();
+      document.getElementById(old_button_id).classList.remove("bg-indigo-600");
+      document.getElementById(old_button_id).classList.remove("text-white");
+      document
+        .getElementById(old_button_id)
+        .classList.remove("hover:bg-indigo-700");
+      document.getElementById(old_button_id).classList.add("bg-gray-200");
+      document.getElementById(old_button_id).classList.add("text-gray-600");
+      document.getElementById(old_button_id).classList.add("hover:bg-gray-300");
+    }
+    this.state.selected.push(name);
+    document.getElementById(name).classList.remove("bg-gray-200");
+    document.getElementById(name).classList.remove("text-gray-600");
+    document.getElementById(name).classList.remove("hover:bg-gray-300");
+    document.getElementById(name).classList.add("bg-indigo-600");
+    document.getElementById(name).classList.add("text-white");
+    document.getElementById(name).classList.add("hover:bg-indigo-700");
+  }
+  render() {
+    return (
+      <div
+        className={this.props.editing ? "bg-gray-100 rounded-lg" : "bg-gray-100 pb-12"}
+      >
+        <div className={classNames(this.props.editing ? "hidden" : "", "py-12 px-6 sm:py-20 lg:px-8")}>
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+              Let's find your soulmate
+            </h2>
+          </div>
+        </div>
+        <div>
+          <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+            <div className="mt-10 sm:mt-0">
+              <div className="md:grid md:grid-cols-3 md:gap-6">
+                <div className="md:col-span-1">
+                  <div className="px-4 sm:px-0">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">
+                      Profile
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-600">
+                      We gotta give your future partner something to work off of
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-5 md:col-span-2 md:mt-0">
+                  <form action="#" method="POST">
+                    <div className="overflow-hidden shadow sm:rounded-md">
+                      <div className="bg-white px-4 py-5 sm:p-6">
+                        <div className="grid grid-cols-6 gap-6">
+                          <div className="col-span-6 sm:col-span-3">
+                            <label
+                              htmlFor="first-name"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              First Name
+                            </label>
+                            <input
+                              type="text"
+                              name="first-name"
+                              id="first-name"
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            />
+                          </div>
+                          <div className="col-span-6 sm:col-span-3">
+                            <label
+                              htmlFor="last-name"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Last Name
+                            </label>
+                            <input
+                              type="text"
+                              name="last-name"
+                              id="last-name"
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            />
+                          </div>
+                          <div className="col-span-6 sm:col-span-6">
+                            <label
+                              htmlFor="phone"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Phone
+                            </label>
+                            <input
+                              type="text"
+                              name="phone"
+                              id="phone"
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            />
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-3">
+                            <label
+                              htmlFor="gender"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Gender
+                            </label>
+                            <select
+                              id="gender"
+                              name="gender"
+                              className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                            >
+                              <option>female</option>
+                              <option>male</option>
+                            </select>
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-3">
+                            <label
+                              htmlFor="gender-pref"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Match me with
+                            </label>
+                            <select
+                              id="gender-pref"
+                              name="gender-pref"
+                              className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                            >
+                              <option>female</option>
+                              <option>male</option>
+                              <option>both</option>
+                            </select>
+                          </div>
+
+                          <div className="col-span-6">
+                            <label
+                              htmlFor="about"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Tell us a bit about yourself
+                            </label>
+                            <input
+                              type="text"
+                              name="about"
+                              id="about"
+                              placeholder="I love dancing and singing in the shower"
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            />
+                          </div>
+                          <div className="col-span-6">
+                            <label className="block text-sm font-medium text-gray-700">
+                              Photo
+                            </label>
+                            <div className="mt-1 flex items-center space-x-5">
+                              <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
+                                <img
+                                  id="profPicImg"
+                                  className="h-full w-full text-gray-300"
+                                  fill="currentColor"
+                                  viewBox="0 0 24 24"
+                                  src={sessionStorage.getItem("profPicSrc")}
+                                ></img>
+                              </span>
+
+                              <label
+                                htmlFor="file-upload2"
+                                className="rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                              >
+                                <span>Upload from device</span>
+                                <input
+                                  id="file-upload2"
+                                  name="file-upload2"
+                                  type="file"
+                                  className="sr-only"
+                                  onChange={() => {
+                                    var inputElem =
+                                      document.getElementById("file-upload2");
+                                    if (inputElem.files && inputElem.files[0]) {
+                                      const fileName = inputElem.files[0].name;
+                                      if (
+                                        !(
+                                          fileName.substring(
+                                            fileName.indexOf("."),
+                                            fileName.length
+                                          ) === ".JPEG" ||
+                                          fileName.substring(
+                                            fileName.indexOf("."),
+                                            fileName.length
+                                          ) === ".jpeg" ||
+                                          fileName.substring(
+                                            fileName.indexOf("."),
+                                            fileName.length
+                                          ) === ".png" ||
+                                          fileName.substring(
+                                            fileName.indexOf("."),
+                                            fileName.length
+                                          ) === ".PNG" ||
+                                          fileName.substring(
+                                            fileName.indexOf("."),
+                                            fileName.length
+                                          ) === ".jpg" ||
+                                          fileName.substring(
+                                            fileName.indexOf("."),
+                                            fileName.length
+                                          ) === ".JPG"
+                                        )
+                                      ) {
+                                        Swal.fire({
+                                          icon: "error",
+                                          title:
+                                            "Cover picture uploads must be in jpeg or pdf format",
+                                        });
+                                      } else {
+                                        var reader = new FileReader();
+
+                                        reader.onload = function (e) {
+                                          document.getElementById(
+                                            "profPicImg"
+                                          ).src = e.target.result;
+                                        };
+
+                                        reader.readAsDataURL(
+                                          inputElem.files[0]
+                                        );
+                                        const storageRef = sRef(
+                                          this.props.storage,
+                                          "pfps/" +
+                                            sessionStorage.getItem("uid") +
+                                            fileName.substring(
+                                              fileName.indexOf("."),
+                                              fileName.length
+                                            )
+                                        );
+
+                                        uploadBytes(
+                                          storageRef,
+                                          inputElem.files[0]
+                                        )
+                                          .then((snapshot) => {
+                                            console.log("Uploaded bytes");
+                                            getDownloadURL(snapshot.ref)
+                                              .then((downloadURL) => {
+                                                update(
+                                                  ref(
+                                                    this.props.database,
+                                                    "users/" +
+                                                      sessionStorage.getItem(
+                                                        "uid"
+                                                      )
+                                                  ),
+                                                  {
+                                                    profile_pic_link:
+                                                      downloadURL,
+                                                  }
+                                                );
+                                              })
+                                              .catch((err) => {
+                                                alert(err);
+                                              });
+                                          })
+                                          .catch((err) => {
+                                            this.catchUploadException(err);
+                                          });
+                                      }
+                                    }
+                                  }}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div className="hidden sm:block" aria-hidden="true">
+              <div className="py-5">
+                <div className="border-t border-gray-200" />
+              </div>
+            </div>
+
+            <div className="mt-10 sm:mt-0">
+              <div className="md:grid md:grid-cols-3 md:gap-6">
+                <div className="md:col-span-1">
+                  <div className="px-4 sm:px-0">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">
+                      Bad Habits
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-600">
+                      Pick your three worst habits, and don't hold back.
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-5 md:col-span-2 md:mt-0">
+                  <form action="#" method="POST">
+                    <div className="space-y-6 overflow-hidden shadow sm:rounded-md">
+                      <div className="bg-white px-4 py-5 sm:p-6">
+                        <div className="flex flex-wrap gap-y-4 flex-row justify-around">
+                          <div>
+                            <button
+                              type="button"
+                              id="oversleeping"
+                              className="transitions-all duration-150 ease-in-out inline-flex items-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-300"
+                              onClick={() => this.clickButton("oversleeping")}
+                            >
+                              <img
+                                className="-ml-1 mr-2 h-5 w-5"
+                                src="https://cdn-icons-png.flaticon.com/512/3094/3094837.png"
+                              ></img>
+                              Oversleeping
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              id="antisocial"
+                              className="transitions-all duration-150 ease-in-out inline-flex items-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-300"
+                              onClick={() => this.clickButton("antisocial")}
+                            >
+                              <img
+                                className="-ml-1 mr-2 h-5 w-5"
+                                src="https://cdn-icons-png.flaticon.com/512/5969/5969499.png"
+                              ></img>
+                              Antisocial
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              id="alwayslate"
+                              onClick={() => this.clickButton("alwayslate")}
+                              className="transitions-all duration-150 ease-in-out inline-flex items-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-300"
+                            >
+                              <img
+                                className="-ml-1 mr-2 h-5 w-5"
+                                src="https://cdn-icons-png.flaticon.com/512/5351/5351454.png"
+                              ></img>
+                              Always Late
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              id="forgetful"
+                              onClick={() => this.clickButton("forgetful")}
+                              className="transitions-all duration-150 ease-in-out inline-flex items-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-300"
+                            >
+                              <img
+                                className="-ml-1 mr-2 h-5 w-5"
+                                src="https://cdn-icons-png.flaticon.com/512/2577/2577567.png"
+                              ></img>
+                              Forgetful
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              id="gossiping"
+                              onClick={() => this.clickButton("gossiping")}
+                              className="transitions-all duration-150 ease-in-out inline-flex items-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-300"
+                            >
+                              <img
+                                className="-ml-1 mr-2 h-5 w-5"
+                                src="https://cdn-icons-png.flaticon.com/512/5862/5862901.png"
+                              ></img>
+                              Gossiping
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              id="oversharing"
+                              onClick={() => this.clickButton("oversharing")}
+                              className="transitions-all duration-150 ease-in-out inline-flex items-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-300"
+                            >
+                              <img
+                                className="-ml-1 mr-2 h-5 w-5"
+                                src="https://cdn-icons-png.flaticon.com/512/2452/2452805.png"
+                              ></img>
+                              Oversharing
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              id="skippingclass"
+                              onClick={() => this.clickButton("skippingclass")}
+                              className="transitions-all duration-150 ease-in-out inline-flex items-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-300"
+                            >
+                              <img
+                                className="-ml-1 mr-2 h-5 w-5"
+                                src="https://cdn-icons-png.flaticon.com/512/7248/7248872.png"
+                              ></img>
+                              Skipping Class
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              id="takeoutaddict"
+                              onClick={() => this.clickButton("takeoutaddict")}
+                              className="transitions-all duration-150 ease-in-out inline-flex items-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-300"
+                            >
+                              <img
+                                className="-ml-1 mr-2 h-5 w-5"
+                                src="https://cdn-icons-png.flaticon.com/512/2722/2722024.png"
+                              ></img>
+                              Takeout Addict
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div className="flex justify-end pt-6">
+                <button
+                  onClick={this.completeSignup}
+                  className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Find my matches!
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default SignUp;
+    
+ 
