@@ -8,16 +8,30 @@ import Profile from './pages/Profile';
 import Schedule from './pages/Schedule';
 import Assistant from './pages/Assistant';
 
+import { useAuthState, useDbData } from './utilities/firebase';
+
 
 function App() {
-  
+  const user = useAuthState();
+  const [dbUsers, dbUsersError] = useDbData("users");
+
+  if (dbUsersError) {
+    console.log(
+        "Error retrieving users from database: ",
+        dbUsersError
+    );
+}
 
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route exact path='/schedule' element={<Schedule/>} />
-          <Route path="/" element={<Home />} />
+          <Route exact path='/schedule' element={<Schedule user={user}/>} />
+          <Route path="/" element={user && dbUsers && dbUsers[user.uid] ? (
+                            <Navigate to="/schedule"/>
+                        ) : (
+                            <Home allUsers={dbUsers}/>
+                        )} />
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/assistant" element={<Assistant />} />
