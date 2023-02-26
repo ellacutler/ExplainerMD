@@ -2,10 +2,10 @@ import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
-import { auth, app } from "../config/firebaseconfig"
+import { auth, app, addNewUser } from "../config/firebaseconfig"
 import { Link, redirect, Navigate } from 'react-router-dom';
 
-const  Home = () => {
+const  Home = (allUsers) => {
   // this is basically the landing page 
   // don't need the nav bar if people aren't logged in that's going to cause problems 
  //  const userCred = await signInWithPopup(auth, new GoogleAuthProvider());
@@ -16,7 +16,7 @@ const  Home = () => {
       <br> 
       </br>
       <h1 className = "text-center text-4xl"> Hi! Welcome to "Explainer MD"</h1>
-      <button onClick = {SignIn} className=" w-96 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full"> Sign in With Google </button>
+      <button onClick = {SignIn(allUsers)} className=" w-96 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full"> Sign in With Google </button>
       
     
     </div>
@@ -27,13 +27,13 @@ const Redirect = async => {
 
 }
 
-const SignIn = async => {
+const SignIn = (allUsers) => {
   var test = "test";
   var object = {"something":"test"}
   console.log(object)
   console.log(object.something)
   console.log(JSON.stringify(object))
-//   const [user, setUser] = useState(0)
+//const [user, setUser] = useState(0)
 
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider)
@@ -44,6 +44,17 @@ const SignIn = async => {
     // The signed-in user info.
     const user = result.user; // is this the user id?? ?
     console.log(JSON.stringify(user));
+    if (user && allUsers && allUsers["allUsers"]) {
+      if (!allUsers["allUsers"][user.uid]) {
+        const newUser = {
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        };
+  
+        addNewUser(newUser, user.uid);
+      }
+    }
     window.location.href = "http://localhost:5173/schedule";
    
      // IdP data available using getAdditionalUserInfo(result)

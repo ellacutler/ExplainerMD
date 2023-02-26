@@ -16,7 +16,8 @@ const Profile = () => {
       
 
       <h1>Profile page</h1>
-
+      
+      
     </div>
   );
 }

@@ -7,18 +7,18 @@ import About from './pages/About';
 import Profile from './pages/Profile';
 import Schedule from './pages/Schedule';
 import Assistant from './pages/Assistant';
-
+import { useDbData } from './config/firebaseconfig.js';
 
 
 function App() {
-  
+  const [dbUsers, dbUsersError] = useDbData('/users');
 
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
           <Route exact path='/schedule' element={<Schedule/>} />
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home allUsers={dbUsers}/>} />
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/assistant" element={<Assistant />} />

@@ -1,9 +1,26 @@
 import { useState } from 'react';
 
-const ScheduledDrug = ({drugName, info}) => {
-    return (
-        <div>{drugName}</div>
-    );
+class ScheduledDrug extends React.Component {
+    constructor(props) {
+        super(props);
+        this.uid = "";
+      }
+      componentDidMount() {
+        this.props.firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            this.uid = user.uid;
+          }
+        });
+      }
+      // need a mapping function to return all prescriptions 
+
+
+    render (
+        return(
+            <div>{this.uid }</div>
+        )
+        
+    ); 
 }
 
 export default ScheduledDrug;
