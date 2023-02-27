@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { useState, useEffect } from "react";
 import { ref, onValue } from "firebase/database";
 import {
   deleteObject,

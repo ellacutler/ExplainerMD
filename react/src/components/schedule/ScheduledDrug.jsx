@@ -16,9 +16,7 @@ class ScheduledDrug extends React.Component {
 
 
     render (
-        return(
-            <div>{this.uid }</div>
-        )
+        
         
     ); 
 }
