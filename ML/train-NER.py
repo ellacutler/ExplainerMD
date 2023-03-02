@@ -7,7 +7,7 @@ import json
 nlp = spacy.blank("en")
 db = DocBin()
 
-f = open('training_data.json')
+f = open('ML/training_data.json')
 train = json.load(f)
 
 for text, annot in tqdm(train['annotations']):
@@ -22,4 +22,4 @@ for text, annot in tqdm(train['annotations']):
     doc.ents = ents
     db.add(doc)
 
-db.to_disk('./training_data.spacy')
+db.to_disk('ML/training_data.spacy')
