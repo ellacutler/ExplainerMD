@@ -23,6 +23,3 @@ for text, annot in tqdm(train['annotations']):
     db.add(doc)
 
 db.to_disk('./training_data.spacy')
-
-''' Get best model'''
-custom_ner = spacy.load("./model-best")
