@@ -3,7 +3,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Schedule from '../pages/Schedule';
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import {Navbar} from "../Components/Navbar";
 
 
 const Profile = () => {
@@ -17,7 +17,7 @@ const Profile = () => {
 
       <h1>Profile page</h1>
       
-      
+
     </div>
   );
 }

@@ -1,6 +1,17 @@
-@tailwind base;
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
+
+:root{
+  background-color: rgb(203 213 225);
+}
+/*@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

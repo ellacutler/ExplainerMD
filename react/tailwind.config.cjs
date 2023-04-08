@@ -4,7 +4,9 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
     "./src/pages/App.jsx",
     "./src/pages/Home.jsx",
-    "./index.html"
+    "./index.html",
+    "./src/pages/Schedule.jsx",
+    "./src/Components/Navbar.jsx",
   ],
   theme: {
     extend: {},
