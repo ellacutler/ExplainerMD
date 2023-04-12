@@ -60,7 +60,7 @@ const Schedule = ({user, allUsers}) => {
     <div>
       <Navbar />
       {/* userdata.username */}
-      <h1 className={h1styles}> {"Hi, " + ""}  </h1> 
+      <h1 className={h1styles}> {"Hi, " + allUsers[user.uid].username}  </h1> 
       <ScheduledDrug />
 
       
