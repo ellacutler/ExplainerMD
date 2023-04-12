@@ -1,38 +1,57 @@
 import { useState } from 'react';
-import {Navbar} from "../Components/Navbar";
+import {Navbar} from "../components/Navbar";
 import { ScheduledDrug } from '../Components/schedule/ScheduledDrug';
 import { GoogleAuthProvider, signInWithPopup, getAuth, onAuthStateChanged } from "firebase/auth";
-import { auth, app } from "../config/firebaseconfig"
+import { addImageToUser, uploadFile, getImageLinkOfExistingImage, deleteFile } from "../config/firebaseconfig"
 import { Link, redirect, Navigate } from 'react-router-dom';
 import { getDatabase, ref, set, off, child, get } from 'firebase/database';
 
 
 
-const Schedule = ({user = ""}) => {
+const Schedule = ({user, allUsers}) => {
   const [count, setCount] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [userdata, setuserdata] = useState("null")
 
-  console.log("hi here we are ")
-  console.log(JSON.stringify(user));
-  const userid = JSON.stringify(user);
+  console.log(allUsers)
+  
+  // console.log("hi here we are ")
+  // console.log(JSON.stringify(user));
+  // const userid = JSON.stringify(user.id);
 
   const h1styles = "text-black text-4xl text-center text-bold";
-  const db = getDatabase();
-  const dbRef = ref(db);
-  // this currently causes a 
-  get(child(dbRef, `users/${user}`)).then((snapshot) => {
-    if (snapshot.exists()) {
-      console.log("def");
-      console.log(snapshot.val());
-      setuserdata(snapshot.val());
+  // const db = getDatabase();
+  // const dbRef = ref(db);
+
+  const handleUpload = async (imageFile) => {
+    if (imageFile) {
+      let [completed, fileLink] = await uploadFile(imageFile, allUsers[user.uid].id);
+      if (completed) {
+        addImageToUser(allUsers[user.uid].id, fileLink);
+        console.log("file uploaded");
+      }
+    }
+  };
+
+  // remove image doesnt work yet
+  const handleRemoveImage = async () => {
+    if (selectedImage) {
+      let fileLink = await deleteFile(selectedImage, allUsers[user.uid].id);
+    }
+  };
+
+  // // this currently causes a 
+  // get(child(dbRef, `users/${user}`)).then((snapshot) => {
+  //   if (snapshot.exists()) {
+  //     // console.log("def");
+  //     // console.log(snapshot.val());
+  //     setuserdata(snapshot.val());
 
 
      
-    }
-  }).catch((error) => {
-    console.log(error);
-  });
+  //   }
+  // }).catch((error) => {
+  //   console.log(error);
+  // });
 
 
   
@@ -40,7 +59,8 @@ const Schedule = ({user = ""}) => {
   return (
     <div>
       <Navbar />
-      <h1 className={h1styles}> {"Hi, " + userdata.username}  </h1>
+      {/* userdata.username */}
+      <h1 className={h1styles}> {"Hi, " + ""}  </h1> 
       <ScheduledDrug />
 
       
@@ -50,11 +70,14 @@ const Schedule = ({user = ""}) => {
 
       <p>Upload and Display Image</p>      
       <br />
-      {selectedImage && (
+      {allUsers && user && allUsers[user.uid].images.photoURL && (
         <div>
-        <img alt="not found" width={"250px"} src={URL.createObjectURL(selectedImage)} />
+        <img alt="not found" width={"250px"} src={allUsers[user.uid].images.photoURL} />
         <br />
-        <button onClick={()=>setSelectedImage(null)}>Remove</button>
+        <button onClick={()=>{
+          setSelectedImage(null);
+          handleRemoveImage();
+        }}>Remove</button>
         </div>
       )}
       <br />
@@ -63,8 +86,12 @@ const Schedule = ({user = ""}) => {
         name="myImage"
         onChange={(event) => {
           setSelectedImage(event.target.files[0]);
+          handleUpload(event.target.files[0]);
         }}
       />
+      <button 
+        onClick={() => {console.log(user); console.log(allUsers[user.uid]);}}
+      >Log</button>
     </div>
   );
 }

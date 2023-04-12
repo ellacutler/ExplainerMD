@@ -1,98 +1,106 @@
 import { useState } from 'react';
-import {Navbar} from '../components/Navbar';
+// import {Navbar} from '../components/Navbar';
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
-import { auth, app } from "../config/firebaseconfig"
+import { signInWithGoogle, useAuthState, addNewUser } from '../config/firebaseconfig';
 import { Link, redirect, Navigate } from 'react-router-dom';
 import { getDatabase, ref, set, off, child, get } from 'firebase/database';
 
 
-const  Home = () => {
+const Home = (allUsers) => {
   // this is basically the landing page 
   // don't need the nav bar if people aren't logged in that's going to cause problems 
  //  const userCred = await signInWithPopup(auth, new GoogleAuthProvider());
-  
-  return (
+  const user = useAuthState();
+  if (user && allUsers && allUsers["allUsers"]) {
+    if (!allUsers["allUsers"][user.uid]) {
+      const newUser = {
+        id: user.uid,
+        email: user.email,
+        username: user.displayName
+      };
+
+      addNewUser(newUser, user.uid);
+    }
+  }
+  return user ? (<Navigate to="/schedule" />)
+  : (
    
     <div className="grid grid-cols-1 place-items-center gap-4">
       <br> 
       </br>
       <h1 className = "text-center text-4xl"> Hi! Welcome to "Explainer MD"</h1>
-      <button onClick = {SignIn} className=" w-96 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full"> Sign in With Google </button>
+      <button onClick = {signInWithGoogle} className=" w-96 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full"> Sign in With Google </button>
       
     
     </div>
   );
-}
-const Redirect = async => {
+};
+export default Home
 
 
-}
+// const SignIn = async => {
+//   var test = "test";
+//   var object = {"something":"test"}
+//   console.log(object)
+//   console.log(object.something)
+//   console.log(JSON.stringify(object))
+// //   const [user, setUser] = useState(0)
 
-const SignIn = async => {
-  var test = "test";
-  var object = {"something":"test"}
-  console.log(object)
-  console.log(object.something)
-  console.log(JSON.stringify(object))
-//   const [user, setUser] = useState(0)
-
-  const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider)
-  .then((result) => {
-    // This gives you a Google Access Token. You can use it to access the Google API.
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential.accessToken;
-    const db = getDatabase();
-    // The signed-in user info.
-    // user. anything is undefined, that's the current problem 
-    const user = result.user; // is this the user id?? ?
-    const userId = user.uid;
-    console.log(JSON.stringify(user));
-    console.log(JSON.stringify(user.displayName));
-    console.log(JSON.stringify(user));
-    const dbRef = ref(db);
-   get(child(dbRef, `users/${userId}`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log("def");
-        console.log(snapshot.val());
-        window.location.href = "http://localhost:5173/schedule";
-      } else {
-        console.log("abc");
-        set(ref(db, 'users/' + userId), {
+//   const provider = new GoogleAuthProvider();
+//   signInWithPopup(auth, provider)
+//   .then((result) => {
+//     // This gives you a Google Access Token. You can use it to access the Google API.
+//     const credential = GoogleAuthProvider.credentialFromResult(result);
+//     const token = credential.accessToken;
+//     const db = getDatabase();
+//     // The signed-in user info.
+//     // user. anything is undefined, that's the current problem 
+//     const user = result.user; // is this the user id?? ?
+//     const userId = user.uid;
+//     console.log(JSON.stringify(user));
+//     console.log(JSON.stringify(user.displayName));
+//     console.log(JSON.stringify(user));
+//     const dbRef = ref(db);
+//    get(child(dbRef, `users/${userId}`)).then((snapshot) => {
+//       if (snapshot.exists()) {
+//         console.log("def");
+//         console.log(snapshot.val());
+//         window.location.href = "http://localhost:5173/schedule";
+//       } else {
+//         console.log("abc");
+//         set(ref(db, 'users/' + userId), {
           
-          username: user.displayName,
+//           username: user.displayName,
           
-        });
-        window.location.href = "http://localhost:5173/schedule";
+//         });
+//         window.location.href = "http://localhost:5173/schedule";
         
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
+//       }
+//     }).catch((error) => {
+//       console.log(error);
+//     });
 
 
     
    
     
-     return 0 
+//      return 0 
 
-  }).catch((error) => {
-    console.log("there is an error here ");
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // The email of the user's account used.
-    // const email = error.customData.email;
-    // The AuthCredential type that was used.
-    const credential = GoogleAuthProvider.credentialFromError(error);
-    // ...
-  });
+//   }).catch((error) => {
+//     console.log("there is an error here ");
+//     // Handle Errors here.
+//     const errorCode = error.code;
+//     const errorMessage = error.message;
+//     // The email of the user's account used.
+//     // const email = error.customData.email;
+//     // The AuthCredential type that was used.
+//     const credential = GoogleAuthProvider.credentialFromError(error);
+//     // ...
+//   });
 
-}
+// }
 
-
-export default Home
 
 
 /*
