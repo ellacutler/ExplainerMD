@@ -16,5 +16,9 @@ doc = custom_ner(text)
 for ent in doc.ents:
   print(ent.text,ent.label_)
 
+'''Wrapper function to obtain entity'''
+def entities(text):
+  return custom_ner(text)
+
 '''Saving current'''
 # custom_ner.to_disk("./ML/model_short/model_custom")
