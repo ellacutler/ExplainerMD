@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import {Navbar} from "../components/Navbar";
-import { ScheduledDrug } from '../Components/schedule/ScheduledDrug';
+import ScheduledDrug from "../components/schedule/ScheduledDrug";
 import { GoogleAuthProvider, signInWithPopup, getAuth, onAuthStateChanged } from "firebase/auth";
-import { addImageToUser, uploadFile, getImageLinkOfExistingImage, deleteFile } from "../config/firebaseconfig"
+import { addImageToUser, uploadFile, getImageLinkOfExistingImage, deleteFile, updateUserDrugs } from "../config/firebaseconfig"
 import { Link, redirect, Navigate } from 'react-router-dom';
 import { getDatabase, ref, set, off, child, get } from 'firebase/database';
 
@@ -38,6 +38,9 @@ const Schedule = ({user, allUsers}) => {
     }
   };
 
+  // useEffect(() => {
+  //   eventData && setEvents(Object.values(eventData));
+  // });
   // // this currently causes a 
   // get(child(dbRef, `users/${user}`)).then((snapshot) => {
   //   if (snapshot.exists()) {
@@ -51,21 +54,49 @@ const Schedule = ({user, allUsers}) => {
   // }).catch((error) => {
   //   console.log(error);
   // });
-
-
+  const defaultDrug = {
+    CHEMICAL: "Wellbutruin",
+    TIME: "Morning",
+    DOSAGE: "75mg",
+    DISEASE: "Being too hot",
+    FILLTIME: "Abc",
+    REFILLTIME: " Idk if we fr need these",
+    QUANTITY: " 30 pills",
+    INFO: "stop being anxious",
+  }
   
+  const handleAddNewDrug = (drug) => {
+    let updatedUserDrugs;
+    if (!allUsers[user.uid].drugs) {
+      updatedUserDrugs = {
+        drugs: [drug],
+      };
+    } else {
+      updatedUserDrugs = {
+        drugs: [...allUsers[user.uid].drugs, drug],
+      };
+    }
+    updateUserDrugs(user.uid, updatedUserDrugs);
+  }
+
 
   return (
     <div>
       <Navbar />
       {/* userdata.username */}
       <h1 className={h1styles}> {allUsers && user ? "Hello, " + allUsers[user.uid].username : "Hello!"}  </h1> 
-      <ScheduledDrug />
-
-      
-      
-
-
+      {
+        !allUsers || !allUsers[user.uid].drugs || allUsers[user.uid].drugs.length === 0 ? (
+          <div>
+            <h1 className={h1styles}> You have no scheduled drugs </h1>
+          </div>
+        ) : (
+          allUsers[user.uid].drugs.map((drug) => (
+            <ScheduledDrug drug={drug} />
+          ))
+        )
+      }
+      <br />
 
       <p>Upload and Display Image</p>      
       <br />

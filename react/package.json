@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mantine/form": "^6.0.8",
     "bootstrap": "^5.2.3",
     "firebase": "^9.17.1",
     "firebase-tools": "^11.23.1",

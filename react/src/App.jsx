@@ -7,8 +7,8 @@ import About from './pages/About';
 import Profile from './pages/Profile';
 import Schedule from './pages/Schedule';
 import Assistant from './pages/Assistant';
-import { Navbar } from './Components/Navbar';
-import { ScheduledDrug } from './Components/schedule/ScheduledDrug';
+import { Navbar } from './components/Navbar';
+//import { ScheduledDrug } from './components/schedule/ScheduledDrug';
 import React, {useState,useEffect} from "react";
 import { onAuthStateChanged,getAuth} from 'firebase/auth';
 import { getDatabase, ref, set, off, child, get } from 'firebase/database';
@@ -64,7 +64,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/navtest" element={<Navbar />} />
-          <Route path="/ptest" element = {<ScheduledDrug />} />
+          {/* <Route path="/ptest" element = {<ScheduledDrug />} /> */}
         </Routes>
       </BrowserRouter>
     </div>

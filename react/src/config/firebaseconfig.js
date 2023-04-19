@@ -72,6 +72,10 @@ export const addNewUser = (newUser, uid) => {
   set(ref(database, "users/" + uid), newUser);
 };
 
+// Update list of user drugs
+export const updateUserDrugs = (userId, newDrugs) => {
+  set(ref(database, `users/${userId}/drugs`), newDrugs);
+}
 // Image upload and delete functions
 
 const storage = getStorage();

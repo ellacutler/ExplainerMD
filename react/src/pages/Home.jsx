@@ -14,7 +14,8 @@ const Home = (allUsers) => {
       const newUser = {
         id: user.uid,
         email: user.email,
-        username: user.displayName
+        username: user.displayName,
+        drugs: []
       };
 
       addNewUser(newUser, user.uid);
