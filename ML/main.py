@@ -19,10 +19,10 @@ firebase_admin.initialize_app(cred, {
 def ner():
     try:
         # Get input image from request
-        img = "test/labelExampleCVS.png"
+        img_path = "test/labelExampleCVS.png"
 
         # Convert img to text:
-        text = vision.argparse()
+        text = vision.detect_text_in_image(img_path)
 
         # Convert text to entities:
         doc = NLP.entities(text)
