@@ -3,7 +3,6 @@ from enum import Enum
 import io
 import pandas as pd
 from pprint import pprint
-
 from google.cloud import vision
 from PIL import Image, ImageDraw
 
@@ -112,12 +111,30 @@ def render_doc_text(filein, fileout):
     else:
         image.show()
 
+def detect_text_in_image(image_path):
+    client = vision.ImageAnnotatorClient()
+
+    with io.open(image_path, "rb") as image_file:
+        content = image_file.read()
+
+    image = vision.Image(content=content)
+    response = client.text_detection(image=image)
+    texts = response.text_annotations
+
+    detected_text = ""
+    for text in texts:
+        detected_text += text.description + " "
+
+    return detected_text.strip()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("detect_file", help="The image for text detection.")
-    parser.add_argument("-out_file", help="Optional output file", default=0)
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("detect_file", help="The image for text detection.")
+    # parser.add_argument("-out_file", help="Optional output file", default=0)
+    # args = parser.parse_args()
 
-    # render_doc_text(args.detect_file, args.out_file)
-    print(detect_text(args.detect_file))
+    # # render_doc_text(args.detect_file, args.out_file)
+    # print(detect_text(args.detect_file))
+
+    detected_text = detect_text_in_image("test/labelNM1.jpg")
+    print(detected_text)
