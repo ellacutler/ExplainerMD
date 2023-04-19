@@ -20,6 +20,7 @@ import { useDbData, useAuthState} from './config/firebaseconfig';
 const App = () => {
   // Get the logged in user
   const user = useAuthState();
+  console.log(user);
   const [allUsers, usersError] = useDbData("/users");
   if (usersError) {
     console.log(usersError);
@@ -56,7 +57,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home allUsers={allUsers} />} />
-          <Route exact path='/schedule' element={
+          <Route path='/schedule' element={
               <Schedule user={user} allUsers={allUsers}/>
           }/>
           <Route path="/about" element={<About />} />

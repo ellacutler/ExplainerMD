@@ -1,10 +1,7 @@
 import { useState } from 'react';
 // import {Navbar} from '../components/Navbar';
-import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 import { signInWithGoogle, useAuthState, addNewUser } from '../config/firebaseconfig';
 import { Link, redirect, Navigate } from 'react-router-dom';
-import { getDatabase, ref, set, off, child, get } from 'firebase/database';
 
 
 const Home = (allUsers) => {

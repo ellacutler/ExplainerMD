@@ -12,7 +12,6 @@ const Schedule = ({user, allUsers}) => {
   const [count, setCount] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  console.log(allUsers)
   
   // console.log("hi here we are ")
   // console.log(JSON.stringify(user));
@@ -60,7 +59,7 @@ const Schedule = ({user, allUsers}) => {
     <div>
       <Navbar />
       {/* userdata.username */}
-      <h1 className={h1styles}> {"Hi, " + allUsers[user.uid].username}  </h1> 
+      <h1 className={h1styles}> {allUsers && user ? "Hello, " + allUsers[user.uid].username : "Hello!"}  </h1> 
       <ScheduledDrug />
 
       
@@ -70,7 +69,7 @@ const Schedule = ({user, allUsers}) => {
 
       <p>Upload and Display Image</p>      
       <br />
-      {allUsers && user && allUsers[user.uid].images.photoURL && (
+      {allUsers && user && allUsers[user.uid].images && allUsers[user.uid].images.photoURL && (
         <div>
         <img alt="not found" width={"250px"} src={allUsers[user.uid].images.photoURL} />
         <br />

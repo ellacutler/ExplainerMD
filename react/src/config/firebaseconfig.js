@@ -61,7 +61,7 @@ export const useDbData = (path) => {
       ),
     [path]
   );
-  
+
   return [data, error];
 };
 
