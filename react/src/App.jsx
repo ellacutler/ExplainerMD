@@ -20,7 +20,7 @@ import { useDbData, useAuthState} from './config/firebaseconfig';
 const App = () => {
   // Get the logged in user
   const user = useAuthState();
-  console.log(user);
+  // console.log(user);
   const [allUsers, usersError] = useDbData("/users");
   if (usersError) {
     console.log(usersError);

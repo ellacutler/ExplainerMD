@@ -74,7 +74,7 @@ export const addNewUser = (newUser, uid) => {
 
 // Update list of user drugs
 export const updateUserDrugs = (userId, newDrugs) => {
-  set(ref(database, `users/${userId}/drugs`), newDrugs);
+  set(ref(database, `users/${userId}`), newDrugs);
 }
 // Image upload and delete functions
 

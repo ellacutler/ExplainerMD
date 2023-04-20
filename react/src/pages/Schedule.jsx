@@ -1,18 +1,23 @@
 import { useState } from 'react';
 import {Navbar} from "../components/Navbar";
 import ScheduledDrug from "../components/schedule/ScheduledDrug";
+import AddDrugToUserModal from '../components/schedule/AddDrugToUserModal';
 import { GoogleAuthProvider, signInWithPopup, getAuth, onAuthStateChanged } from "firebase/auth";
 import { addImageToUser, uploadFile, getImageLinkOfExistingImage, deleteFile, updateUserDrugs } from "../config/firebaseconfig"
 import { Link, redirect, Navigate } from 'react-router-dom';
 import { getDatabase, ref, set, off, child, get } from 'firebase/database';
 
-
+import { Button } from '@mantine/core';
 
 const Schedule = ({user, allUsers}) => {
   const [count, setCount] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  
+  const [showAddDrugModal, setShowAddDrugModal] = useState(false);
+
+  const handleShowAddDrugModal = () => setShowAddDrugModal(true);
+  const handleCloseAddDrugModal = () => setShowAddDrugModal(false);
+
   // console.log("hi here we are ")
   // console.log(JSON.stringify(user));
   // const userid = JSON.stringify(user.id);
@@ -83,6 +88,13 @@ const Schedule = ({user, allUsers}) => {
   return (
     <div>
       <Navbar />
+      <AddDrugToUserModal
+        show={showAddDrugModal}
+        handleClose={handleCloseAddDrugModal}
+        handleSubmit={handleAddNewDrug}
+        user={user}
+        allUsers={allUsers}
+      />
       {/* userdata.username */}
       <h1 className={h1styles}> {allUsers && user ? "Hello, " + allUsers[user.uid].username : "Hello!"}  </h1> 
       {
@@ -122,6 +134,7 @@ const Schedule = ({user, allUsers}) => {
       <button 
         onClick={() => {console.log(user); console.log(allUsers[user.uid]);}}
       >Log</button>
+      <Button onClick={handleShowAddDrugModal}>Add Drug</Button>
     </div>
   );
 }
