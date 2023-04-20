@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 import spacy
 import json
 import visionAPI as vision
-import NERpipeline as NLP
+import NER as NLP
 
 app = Flask(__name__)
 
