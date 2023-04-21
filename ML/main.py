@@ -3,8 +3,9 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from flask import Flask, request, jsonify
 import spacy
+import json
 import visionAPI as vision
-import NERpipeline as NLP
+import NER as NLP
 
 app = Flask(__name__)
 
@@ -26,6 +27,13 @@ def ner():
 
         # Convert text to entities:
         doc = NLP.entities(text)
+
+        # Convert to JSON:
+        doc_dict = {}
+        for ent in doc.ents:
+            doc_dict[ent.label_] = ent.text
+
+        return json.dumps(doc_dict)
 
     except Exception as e:
         print(str(e))
