@@ -6,6 +6,8 @@ after opening the github make sure you're in the \ExplainerMD\ folder in the ter
 
 (you might have to do some setup getting npm on your computer)
 
+### Browser to use
+There's an error right now that crashes when using microsoft edge involving 'uid', has me worried it might be happening elsewhere but so far using firefox/chrome fixes that issue
 
 ### Initial Setup
 put google cloud authentication file (davi's is the "citric-trees... .json" file) inside of ML folder

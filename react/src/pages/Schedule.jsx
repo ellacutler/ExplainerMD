@@ -14,7 +14,6 @@ import axios from 'axios';
 import { useEffect } from "react";
 
 const Schedule = ({user, allUsers}) => {
-  const [count, setCount] = useState(0);
   
   const [file, setFile] = useState(null);
   const [url, setUrl] = useState('');
@@ -74,7 +73,11 @@ const Schedule = ({user, allUsers}) => {
       .then(response => response.json())
       .then(data => {
       console.log(data);
-
+      // when modelDrug is set, new modelOutput is in AddDrugToUserModal, 
+      // which it's useEffect picks up on, then sets new values
+      setModelDrug(data);
+      console.log("gonna showAddDrugModal now");
+      setShowAddDrugModal(true);
       // Do something with the data here
       })
       .catch(error => {
@@ -87,12 +90,7 @@ const Schedule = ({user, allUsers}) => {
       addImageToUser(allUsers[user.uid].id, url);
       // somehow the file is just already updated even though we dont setFile..?
       // anyways use that when making post request to Flask server
-      setModelDrug(await getJSONFromImage(file));
-      console.log("gonna show add drug modal")
-      setShowAddDrugModal(true);
-      // NEED TO WORK ON GETTING INFO INTO THE MODAL HERE
-      // i thought this would show the modal pre-filled out if ModelDrug is updated,
-      // but also i have no idea how mantine works lol
+      await getJSONFromImage(file);
       
     }
 

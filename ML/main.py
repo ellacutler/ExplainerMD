@@ -32,9 +32,7 @@ def ner():
     try:
         # Get input image binary file data from request
         file = request.get_data()     
-        # Convert that to text
         text = vision.detect_text_in_image_binary(file)
-        # Convert text to entities:
         doc = NLP.entities(text)
         # Convert to JSON:
         doc_dict = {}
@@ -42,7 +40,8 @@ def ner():
             doc_dict[ent.label_] = ent.text
             # THIS IS SORT OF AN ISSUE WITH THE MODEL, IT CAN FIND MULTIPLE OF THE SAME THING!
             print("this label "+str(ent.label_)+" got this text "+str(ent.text))
-    
+        print("final dict:")
+        print(json.dumps(doc_dict))
         return json.dumps(doc_dict)
 
     except Exception as e:

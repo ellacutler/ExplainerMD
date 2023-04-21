@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect } from 'react';
 import { Button, Modal, Text, TextInput, Textarea } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 
 const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, modelOutput}) => {
-
     // const [formData, setFormData] = useState({
     //     CHEMICAL: "",
     //     PRESCRIBER: "",
@@ -13,16 +12,35 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
     //     CONDITION: "",
     //     NOTES: "",
     // });
+    
+    useEffect(() => {
+        console.log("hey im gonna reset the form with this modelOutput:")
+        console.log(modelOutput)
+        if (modelOutput) {
+          form.reset();
+          form.setValues({
+            CHEMICAL: modelOutput && modelOutput.CHEMICAL ? modelOutput.CHEMICAL : "",
+            PRESCRIBER: modelOutput && modelOutput.PRESCRIBER ? modelOutput.PRESCRIBER : "",
+            PHARMACY: "",
+            FREQUENCY: modelOutput && modelOutput.FREQUENCY ? modelOutput.FREQUENCY : "",
+            DOSAGE: modelOutput && modelOutput.DOSAGE ? modelOutput.DOSAGE : "",
+            TIMES: [],
+            CONDITION: modelOutput && modelOutput.DISEASE ? modelOutput.DISEASE : "",
+            NOTES: "",
+          })
+          console.log("ok set some values or something")
+        }
+      }, [modelOutput]);
 
     const form = useForm({
         initialValues: { 
-            CHEMICAL: modelOutput && modelOutput.CHEMICAL ? modelOutput.CHEMICAL : "",
-            PRESCRIBER: modelOutput && modelOutput.PRESCRIBER ? modelOutput.PRESCRIBER : "",
+            CHEMICAL: "",
+            PRESCRIBER: "",
             PHARMACY: "",
             FREQUENCY: "",
             DOSAGE: "",
             TIMES: [],
-            CONDITION: modelOutput && modelOutput.DISEASE ? modelOutput.DISEASE : "",
+            CONDITION: "",
             NOTES: "",
         },
         validate: {
@@ -32,6 +50,7 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
         }
     });
     
+    // does this ever get run..?
     const createDrug = (e) => {
         form.reset(); // clear form
         handleSubmit(form.values);
