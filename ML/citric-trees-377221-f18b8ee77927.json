@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "citric-trees-377221",
+  "private_key_id": "f18b8ee77927a731abcb68545a7356d882f13d77",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCtm+Jdc04HYYBD\nby11rhHx4Hs+CxdvhCblOukbZRHArXsYmiLjRha5RXW+f579JTD4odLB4UIZDtrV\noaTbChcpvmGuJnvDJCt63LeMui3COJAU6a4kxb5jb509XEorLWsV7gTlgRrBHxxt\nDA1KoQzBmKEFJo2Gfdv9lbJNSlvMHwYyXgvMv2qSM3gUpScGk8shxgKGVztXg9Sz\nRL7sTWvCofZd6TRgxvTuVWWf4n/D/TSo8Xuz7Vn+nfxAgMm9ZPOsnqkVYyebw3mU\nieUJVGZ6+3LyaztN/LL9QAhi1UGrz5uTMAtPHUqlB4FO1vyJwW8YElej+pV9dchT\nU16I/DjHAgMBAAECggEAB6zwLaSG6yGe65xTPLQ0++YqXLxdzWLg21qm6ryls8iX\nvCc4aqbzIz7UbVc0HsoRp7Rz3nmIlBYJi89pO/vuuTw/ElWGPELxny15+gFTO5aH\nnD0Wo26Qs9G/+HIHn3ATH3WWBtWV6rrm5VVWkxmauEZ4vAMP18Xhv4zqRKuIcnZL\n8zV1pnwUnbLGI9GOKGxD6LrENNRG8OueXQNJYzwM86Qp/T8mKWXvxLjIr6zJphxF\n0yEOkMbN+hljwGV5AZYwhmmSwne2Igh5ani63BraY/fwf+MF0HHONmSWKvJrkMJ3\n05Dwqy+lbbloAGmrBYoUa7dineN9aRhJQO4e9a0EUQKBgQDohHYpWqULfLUvSpvJ\nHM92A32fYfbAmI4Ih0NtRYkknj1gFEnQ66IJ0jl1Vx+2rHTGvg/ccNINGBc57Q6d\nj5+iAzQF356jJSaFo0EZb5tODfFudm4YrY/q66/T5sAa2ZIixhl12wDCUzpNo3ch\ni6J708QPIDvdFMXi4KVEboH5lwKBgQC/JGTTptQqtfNG1lgtzrGd4Gu71s4lBurn\nueKgGy0MBIgjIOydxAis2g+1wS/fJQ7GO+kdZjzwq2LyDhHgoe+31Pclb/Mz3Vtm\nc5c4/rDKbUZosN2TaTG/nQtzY2y1GKdaq4j6mwCxBGAnzVSvSMT3nTR/zH5UV8AT\n/YlQJg3AUQKBgFFT+6yNSwtQjGNFOmZG0H3bzLXR4ygMdCmhfkEbQFPxkVAo6ITN\n1niO8pALcElJ2vKlChE12RLBaWZWd3U/Bjv52NlxFSDFXssBhkSqV+0eTWMww2OY\nWa120KJSpMD/dvD4z3D8sDBIQi1jzsiJ+cRMFtifkrDKkkjAAK6F5KpzAoGAATRc\ngkzx11cQMmkVYyyDSAhrBWMEJ42Um2M7f2DMdt/sb7Q8aX4bw+MX6EBQaeqU3kDw\nZiQHzEh4NihKiozasuDfsdezw6bodYvS7yQDvzLTF8PNkak/DAMUWGTPAZEnNNYR\n5epmJbduV7Hej8A4pYrTEt8aCLQI3NdjLyMeQRECgYB6bxP38F6qRz9KfYEAQUnI\nfXbDmHWzE4Rx8V3xkDU3/UsOVd5d6e3CbiJ0nPxUcqbxrOmWulhnDe1BBKnTctan\nQ0568gMxt3tsiDZmBIPE1oedzPvB6wKiVueMmiOk/paFN8NVfTkkKvVYmP0H60O/\nVoK1a+xZGqnyoBWAGbXBVQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "first-project@citric-trees-377221.iam.gserviceaccount.com",
+  "client_id": "115482413495588699110",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/first-project%40citric-trees-377221.iam.gserviceaccount.com"
+}

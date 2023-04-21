@@ -10,9 +10,15 @@ import { getDatabase, ref, set, off, child, get } from 'firebase/database';
 import { Button, FileInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
+import axios from 'axios';
+import { useEffect } from "react";
+
 const Schedule = ({user, allUsers}) => {
   const [count, setCount] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
+  
+  const [file, setFile] = useState(null);
+  const [url, setUrl] = useState('');
+
   const [modelDrug, setModelDrug] = useState(null);
 
   const [showAddDrugModal, setShowAddDrugModal] = useState(false);
@@ -42,38 +48,59 @@ const Schedule = ({user, allUsers}) => {
       }
     }
   });
-
-  const handleUpload = async (imageFile) => {
-    if (imageFile) {
-      let [completed, fileLink] = await uploadFile(imageFile, allUsers[user.uid].id);
-      if (completed) {
-        addImageToUser(allUsers[user.uid].id, fileLink);
-        console.log("file uploaded");
-        setModelDrug(await getJSONFromImage(imageFile));
-      }
-    }
-  };
-
-  const getJSONFromImage = async (imageFile) => {
-    return fetch('http://127.0.0.1:5000/ner', {
-      method: 'POST',
-      body: imageFile
-    })
-    .then(response => response.json())
-    .then(json => {
-      console.log(json);
-      return json;
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   }
-  // remove image doesnt work yet
-  const handleRemoveImage = async () => {
-    if (selectedImage) {
-      let fileLink = await deleteFile(selectedImage, allUsers[user.uid].id);
-    }
+
+  // Using the ImgBB API (i gave up on having firebase host images lmaooo)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('image', file);
+    const res = await axios.post('https://api.imgbb.com/1/upload?key=c94645b6776f603f01ed1556d0ac0303', formData);
+    console.log("res finished, heres the URL")
+    console.log(res.data.data.url)
+    setUrl(res.data.data.url);
+    // continues running in useEffect when URL is updated
   };
+
+  // makes sure url is done being updated with whatever the file is before more stuff gets run
+  useEffect(() => {
+    const getJSONFromImage = async (imageURL) => {
+      return fetch('http://127.0.0.1:5000/ner', {
+        method: 'POST',
+        body: imageURL
+      })
+      .then(response => response.json())
+      .then(data => {
+      console.log(data);
+
+      // Do something with the data here
+      })
+      .catch(error => {
+      console.error(error);
+      });
+    }
+    const runAsyncUrlStuff = async () => {
+      console.log(url)
+      // Now that the URL has been updated you can add that to the user
+      addImageToUser(allUsers[user.uid].id, url);
+      // somehow the file is just already updated even though we dont setFile..?
+      // anyways use that when making post request to Flask server
+      setModelDrug(await getJSONFromImage(file));
+      console.log("gonna show add drug modal")
+      setShowAddDrugModal(true);
+      // NEED TO WORK ON GETTING INFO INTO THE MODAL HERE
+      // i thought this would show the modal pre-filled out if ModelDrug is updated,
+      // but also i have no idea how mantine works lol
+      
+    }
+
+    if(url){
+      runAsyncUrlStuff();
+    }
+    
+  }, [url]); //useEffect only runs when url changes, which is only in handleSubmit 
 
   // useEffect(() => {
   //   eventData && setEvents(Object.values(eventData));
@@ -141,16 +168,13 @@ const Schedule = ({user, allUsers}) => {
       {allUsers && user && allUsers[user.uid].images && allUsers[user.uid].images.photoURL && (
         <div>
         <img alt="not found" width={"250px"} src={allUsers[user.uid].images.photoURL} />
-        <br />
-        <button onClick={()=>{
-          setSelectedImage(null);
-          handleRemoveImage();
-        }}>Remove</button>
         </div>
       )}
       <br />
-      <form onSubmit={ /* RYAN LOOK HERE*/
-        form.onSubmit(handleUpload)}>
+      
+      {/* Aaaaaahhhhhhhhhh idk how mantine works */}
+      {/* 
+      <form onSubmit={ form.onSubmit(handleUpload)}>
         <FileInput
           label="Upload Image" 
           placeholder='Choose image file'
@@ -159,6 +183,18 @@ const Schedule = ({user, allUsers}) => {
         />
         <Button type="submit">Add Drug from Image</Button>
       </form>
+      */}
+
+      <div>
+        <form onSubmit={handleSubmit}>
+          <input type="file" onChange={handleFileChange} />
+          <button type="submit">Upload</button>
+        </form>
+        {url && <img src={url} alt="Uploaded image" />}
+      </div>
+
+      <br/>
+      
       <Button onClick={handleShowAddDrugModal}>Add Drug</Button>
       <br />
       {/* <FileInput
