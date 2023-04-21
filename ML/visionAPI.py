@@ -4,6 +4,7 @@ import io
 import pandas as pd
 from pprint import pprint
 from google.cloud import vision
+from google.oauth2 import service_account
 from PIL import Image, ImageDraw
 
 
@@ -112,7 +113,7 @@ def render_doc_text(filein, fileout):
         image.show()
 
 def detect_text_in_image(image_path):
-    client = vision.ImageAnnotatorClient()
+    client = vision.ImageAnnotatorClient(credentials=service_account.Credentials.from_service_account_file("citric-trees-377221-f18b8ee77927.json"))
 
     with io.open(image_path, "rb") as image_file:
         content = image_file.read()

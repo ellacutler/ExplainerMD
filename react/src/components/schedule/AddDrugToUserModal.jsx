@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button, Modal, Text, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { Button, Modal, Text, TextInput, Textarea } from "@mantine/core";
+import { isNotEmpty, useForm } from "@mantine/form";
 
 const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, modelOutput}) => {
 
@@ -21,19 +21,25 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
             PHARMACY: "",
             FREQUENCY: "",
             DOSAGE: "",
+            TIMES: [],
             CONDITION: modelOutput && modelOutput.DISEASE ? modelOutput.DISEASE : "",
             NOTES: "",
         },
-        validate: {}
+        validate: {
+            CHEMICAL: (value) => (value.length < 2 ? 'Name must have at least 2 letters' : null),
+            FREQUENCY: isNotEmpty('Frequency is required'),
+            DOSAGE: isNotEmpty('Dosage is required'),
+        }
     });
-
+    
     const createDrug = (e) => {
+        form.reset(); // clear form
         handleSubmit(form.values);
+        handleClose();
     }
 
     return (
         <div>
-            
             <Modal 
                 opened={show}
                 onClose={handleClose}
@@ -43,12 +49,11 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
                 overflow="inside"
             >
                 <form
-                    onSubmit={form.onSubmit((values, event) => {
-                        handleSubmit(values);
-                        handleClose();
+                    onSubmit={form.onSubmit((event) => {
+                        createDrug(event);
                     })}
                 >
-                    <Text fz="xl" fw="700" mb="2rem" mt="2rem">
+                    <Text fz="xl" fw="700" mb="2rem">
                         Enter Drug Information:
                     </Text>
                 
@@ -56,61 +61,59 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
                     <TextInput
                         withAsterisk
                         label="Medication Name"
+                        placeholder="Ex: Tylenol"
                         {...form.getInputProps("CHEMICAL")}
                         size="lg"
-                        required
+
                     />
 
                     <TextInput
-                        withAsterisk
                         label="Name of Doctor/Prescriber"
+                        placeholder="Ex: Dr. John Smith"
                         {...form.getInputProps("PRESCRIBER")}
                         size="lg"
-                        required
                     />
 
                     <TextInput
                         withAsterisk
                         label="Pharmacy"
+                        placeholder="Ex: Walgreens"
                         {...form.getInputProps("PHARMACY")}
                         size="lg"
-                        required
                     />
 
                     <TextInput
                         withAsterisk
                         label="Dosage"
+                        placeholder="Ex: 500mg"
                         {...form.getInputProps("DOSAGE")}
                         size="lg"
-                        required
                     />
 
                     <TextInput
                         withAsterisk
                         label="Frequency"
+                        placeholder="Ex: 2x a day"
                         {...form.getInputProps("FREQUENCY")}
                         size="lg"
-                        required
                     />
 
                     <TextInput
-                        withAsterisk
                         label="Condition"
+                        placeholder="Ex: Headache"
                         {...form.getInputProps("CONDITION")}
                         size="lg"
-                        required
                     />
 
-                    <TextInput
-                        withAsterisk
+                    <Textarea
                         label="Additional Notes"
+                        placeholder="Ex: Take with food"
                         {...form.getInputProps("NOTES")}
                         size="lg"
-                        required
                     />
-                    
+                    <Button type="submit">Add Drug</Button>
                 </form>
-                <Button onClick={createDrug}>Add Drug</Button>
+                
             </Modal>
         </div>
     );

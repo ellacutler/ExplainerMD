@@ -57,12 +57,20 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home allUsers={allUsers} />} />
-          <Route path='/schedule' element={
-              <Schedule user={user} allUsers={allUsers}/>
-          }/>
+          <Route path='/schedule' 
+            element={<Schedule 
+                user={user}
+                allUsers={allUsers}
+            />} 
+          />
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/assistant" element={<Assistant />} />
+          <Route path="/assistant" 
+            element={<Assistant
+              user={user} 
+              allUsers={allUsers}
+            />}
+          />
           <Route path="/navtest" element={<Navbar />} />
           {/* <Route path="/ptest" element = {<ScheduledDrug />} /> */}
         </Routes>

@@ -7,13 +7,18 @@ import json
 import visionAPI as vision
 import NER as NLP
 
+
 app = Flask(__name__)
 
-# Initialize Firebase Admin SDK
-cred = credentials.ApplicationDefault()
-firebase_admin.initialize_app(cred, {
-    'projectId': 'explainermd-cc5aa',
-})
+@app.after_request
+def add_headers(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+# # Initialize Firebase Admin SDK
+# cred = credentials.ApplicationDefault()
+# firebase_admin.initialize_app(cred, {
+#     'projectId': 'explainermd-cc5aa',
+# })
 
 
 @app.route('/ner', methods=['POST'])
@@ -37,4 +42,9 @@ def ner():
 
     except Exception as e:
         print(str(e))
-        return 'Internal server error', 500
+        print("rip")
+        return json.dumps({'Internal server error': 500})
+    
+@app.route('/ner', methods=['GET'])
+def ner_get():
+    return 'get works'
