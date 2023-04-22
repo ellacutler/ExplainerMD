@@ -2,12 +2,10 @@ import { useState } from 'react';
 import {Navbar} from "../components/Navbar";
 import ScheduledDrug from "../components/schedule/ScheduledDrug";
 import AddDrugToUserModal from '../components/schedule/AddDrugToUserModal';
-import { GoogleAuthProvider, signInWithPopup, getAuth, onAuthStateChanged } from "firebase/auth";
-import { addImageToUser, uploadFile, getImageLinkOfExistingImage, deleteFile, updateUserDrugs } from "../config/firebaseconfig"
-import { Link, redirect, Navigate } from 'react-router-dom';
-import { getDatabase, ref, set, off, child, get } from 'firebase/database';
+import { addImageToUser,  updateUserDrugs } from "../config/firebaseconfig"
 
-import { Button, FileInput } from '@mantine/core';
+
+import { Button, FileInput, FileButton } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 import axios from 'axios';
@@ -21,6 +19,10 @@ const Schedule = ({user, allUsers}) => {
   const [modelDrug, setModelDrug] = useState(null);
 
   const [showAddDrugModal, setShowAddDrugModal] = useState(false);
+
+  const [drugs, setDrugs] = useState([]);
+
+  const [drugSchedule, setDrugSchedule] = useState(null);
 
   const handleShowAddDrugModal = () => setShowAddDrugModal(true);
   const handleCloseAddDrugModal = () => setShowAddDrugModal(false);
@@ -63,6 +65,7 @@ const Schedule = ({user, allUsers}) => {
     // continues running in useEffect when URL is updated
   };
 
+
   // makes sure url is done being updated with whatever the file is before more stuff gets run
   useEffect(() => {
     const getJSONFromImage = async (imageURL) => {
@@ -99,32 +102,29 @@ const Schedule = ({user, allUsers}) => {
     }
     
   }, [url]); //useEffect only runs when url changes, which is only in handleSubmit 
-
-  // useEffect(() => {
-  //   eventData && setEvents(Object.values(eventData));
-  // });
-  // // this currently causes a 
-  // get(child(dbRef, `users/${user}`)).then((snapshot) => {
-  //   if (snapshot.exists()) {
-  //     // console.log("def");
-  //     // console.log(snapshot.val());
-  //     setuserdata(snapshot.val());
-  //   }
-  // }).catch((error) => {
-  //   console.log(error);
-  // });
-  const defaultDrug = {
-    CHEMICAL: "Wellbutruin",
-    TIME: "Morning",
-    DOSAGE: "75mg",
-    DISEASE: "Being too hot",
-    FILLTIME: "Abc",
-    REFILLTIME: " Idk if we fr need these",
-    QUANTITY: " 30 pills",
-    INFO: "stop being anxious",
-  }
   
   const handleAddNewDrug = (drug) => {
+    switch (drug.FREQUENCY) {
+      case 'Every Night':
+        drug.FREQUENCYN = 24;
+        break;
+      case 'Weekly':
+        drug.FREQUENCYN = 24 * 7;
+        break;
+      case 'Twice Daily':
+        drug.FREQUENCYN = 12;
+        break;
+      case 'every other day':
+        drug.FREQUENCYN = 24 * 2;
+        break;
+    }
+    drug.START_TIME = new Date().toISOString();
+    if (drug.FREQUENCY === 'Every Night') {
+      let temp = new Date();
+      temp.setHours(22, 0, 0, 0)
+      drug.START_TIME = temp.toISOString();
+    }
+    console.log(drug);
     let updatedUserDrugs;
     if (!allUsers[user.uid].drugs) {
       updatedUserDrugs = [drug];
@@ -134,10 +134,78 @@ const Schedule = ({user, allUsers}) => {
     updateUserDrugs(user.uid, updatedUserDrugs);
   }
 
+  // const getDrugSchedule = (drug) => {
+  //   const schedule = [];
+  //   const now = new Date();
+  //   const nextScheduledTime = new Date(drug.START_TIME);
+  //   while (nextScheduledTime < now) {
+  //     nextScheduledTime.setTime(nextScheduledTime.getTime() + drug.frequency * 60 * 60 * 1000);
+  //   }
+  //   for (let i = 0; i < 7; i++) {
+  //     schedule.push(new Date(nextScheduledTime));
+  //     nextScheduledTime.setTime(nextScheduledTime.getTime() + drug.frequency * 60 * 60 * 1000);
+  //   }
+  //   return schedule;
+  // };
+  useEffect(() => {
+    if (allUsers && user && allUsers[user.uid] && allUsers[user.uid].drugs) {
+      setDrugs(allUsers[user.uid].drugs);
+    }
+  }, [allUsers, user]);
+
+  const start = new Date();
+  const end = new Date();
+  end.setDate(end.getDate() + 7);
+
+  const dates = [];
+  for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+    dates.push(new Date(date));
+  }
+
+  useEffect(() => {
+    const schedule = [];
+
+    // calculate schedule for the next 7 days
+    const today = new Date();
+
+    drugs.forEach((drug) => {
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+        const nextday = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i + 1);
+        let curTime = day
+        curTime.setHours(new Date(drug.START_TIME).getHours(), new Date(drug.START_TIME).getMinutes(), 0, 0);
+        while (curTime < nextday) {
+          let newTime = { drug: drug.CHEMICAL, time: new Date(curTime.getTime()) }
+          schedule.push(newTime)
+          curTime.setTime(curTime.getTime() + drug.FREQUENCYN*60*60*1000);
+        }
+      }
+    });
+
+    // for (let i = 0; i < 7; i++) {
+    //   const day = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+    //   const nextday = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i + 1);
+    //   drugs.forEach((drug) => {
+    //     let curTime = day
+    //     curTime.setHours(8, 0, 0, 0);
+    //     const frequency = drug.FREQUENCYN;
+    //     while (curTime >= day && curTime < nextday) {
+    //       console.log("curTime: " + curTime)
+    //       schedule.push({ drug: drug.CHEMICAL, time: curTime })
+    //       curTime.setTime(curTime.getTime() + frequency*60*60*1000);
+    //     }
+    //   });
+    // }
+
+    // sort schedule by time
+    // schedule.sort((a, b) => a.time - b.time);
+    // console.log(schedule)
+    setDrugSchedule(schedule);
+  }, [drugs]);
 
   return (
     <div>
-      <Navbar />
+      <Navbar tab={'schedule'}/>
       <AddDrugToUserModal
         show={showAddDrugModal}
         handleClose={handleCloseAddDrugModal}
@@ -155,20 +223,31 @@ const Schedule = ({user, allUsers}) => {
           </div>
         ) : (
           allUsers[user.uid].drugs.map((drug) => (
-            <ScheduledDrug drug={drug} />
+            <ScheduledDrug 
+              key={drug.CHEMICAL}
+              drug={drug} />
           ))
         )
       }
-      <br />
+      <div class="p-2 flex justify-center items-center bg-[#cbd7e3]">
+        <div class="h-auto  w-96 bg-white rounded-lg p-4">
+          <p class="text-xl font-semibold mt-2 text-[#063c76]">Prescription Schedule</p>
 
-      <p>Upload and Display Image</p>      
+            {dates.map((date) => (
+              <div key={date.toISOString()}>
+                <ScheduleDay date={date} drugSchedule={drugSchedule}/>
+              </div>
+            ))}
+        </div>
+      </div>
       <br />
+      <p>Upload and Display Image</p>      
+      {/* <br />
       {allUsers && user && allUsers[user.uid].images && allUsers[user.uid].images.photoURL && (
         <div>
         <img alt="not found" width={"250px"} src={allUsers[user.uid].images.photoURL} />
         </div>
-      )}
-      <br />
+      )} */}
       
       {/* Aaaaaahhhhhhhhhh idk how mantine works */}
       {/* 
@@ -182,18 +261,17 @@ const Schedule = ({user, allUsers}) => {
         <Button type="submit">Add Drug from Image</Button>
       </form>
       */}
-
       <div>
         <form onSubmit={handleSubmit}>
           <input type="file" onChange={handleFileChange} />
-          <button type="submit">Upload</button>
+          <Button variant="outline" type="submit">Upload</Button>
         </form>
         {url && <img src={url} alt="Uploaded image" />}
       </div>
 
       <br/>
       
-      <Button onClick={handleShowAddDrugModal}>Add Drug</Button>
+      <Button variant="outline" onClick={handleShowAddDrugModal}>Add Drug</Button>
       <br />
       {/* <FileInput
         label="Upload Image"
@@ -209,6 +287,43 @@ const Schedule = ({user, allUsers}) => {
       
     </div>
   );
+}
+
+const ScheduleDay = ({ date, drugSchedule }) => {
+  return (
+    <div>
+      <p>{date.toLocaleDateString([], { weekday: 'short' })}</p>
+      <ul class="my-4 ">
+        {drugSchedule && drugSchedule
+          .filter(
+            (drug) => {
+              //console.log(drug.time.toLocaleDateString([], { weekday: 'short' }) === date.toLocaleDateString([], { weekday: 'short' }))
+              return drug.time.toLocaleDateString([], { weekday: 'short' }) === date.toLocaleDateString([], { weekday: 'short' })
+            }
+          )
+          .map((drug, id) => {
+            //console.log("drugSchedule after map:");
+            //console.log(drugSchedule);
+            return (
+              <li key={id} class=" mt-4" id="1">
+                  <div class="flex gap-2">
+                      <div class="w-9/12 h-12 bg-[#e0ebff] rounded-[7px] flex justify-start items-center px-3">
+                          <p class=" text-sm ml-4 text-[#5b7a9d] font-semibold">
+                            {drug.drug}
+                          </p>
+                      </div>
+                      <span class="w-1/4 h-12 bg-[#e0ebff] rounded-[7px] flex justify-center text-sm text-[#5b7a9d] font-semibold items-center ">
+                        {drug.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                  </div>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  )
+
 }
 
 export default Schedule

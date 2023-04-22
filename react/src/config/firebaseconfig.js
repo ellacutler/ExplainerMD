@@ -65,6 +65,11 @@ export const useDbData = (path) => {
   return [data, error];
 };
 
+// Add symptom tracker data to user in database
+export const addSymptomTrackerData = (userId, newArray) => {
+  set(ref(database, `users/${userId}/symptoms`), newArray);
+};
+
 // USER FUNCTIONALITY
 
 // Add a new user to the users table in the database

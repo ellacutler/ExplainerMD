@@ -4,7 +4,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
-import Profile from './pages/Profile';
+import Journal from './pages/Journal';
 import Schedule from './pages/Schedule';
 import Assistant from './pages/Assistant';
 import { Navbar } from './components/Navbar';
@@ -53,7 +53,7 @@ const App = () => {
   //   })
   // };
   return (
-    <div className="App bg-slate-300">
+    <div className="App">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home allUsers={allUsers} />} />
@@ -64,7 +64,12 @@ const App = () => {
             />} 
           />
           <Route path="/about" element={<About />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/journal"   
+            element={<Journal 
+                user={user}
+                allUsers={allUsers}
+            />} 
+          />
           <Route path="/assistant" 
             element={<Assistant
               user={user} 

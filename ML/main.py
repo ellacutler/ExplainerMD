@@ -17,7 +17,8 @@ from PIL import Image
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
+openai.organization = "org-AanZ8UEwwQn4x89YMCu6n9dr"
 openai.api_key = os.getenv("OPENAI_API_KEY")
 CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -61,22 +62,36 @@ def ner_get():
     
 
 global history
-history = [{"role": "system", "content": f"You are a health assistant"},
-           {"role": "user", "content": f"You are a health assistant. Given the symptoms that the user describes, come up with possible medical conditions and what type of doctor can address it."},]
+history = [
+           {"role": "user", "content": f"You are a health assistant. Given the symptoms that the user describes, come up with possible medical conditions and what type of doctor can address it."},
+           {"role": "system", "content": f"Hi there! I'm an AI symptom diagnosis assistant. Please tell me how you're feeling today, and I'll track these symptoms and do my best to provide an accurate assessment of them. To receive an assessment of your symptoms, please enter the word 'Diagnosis."},
+           ]
 
-@app.route("/", methods=("GET", "POST"))
+global temp_history
+temp_history = history
+
+@app.route("/assistant", methods=("GET", "POST"))
 def index():
 
     # Get text inputted by user
     if request.method == "POST":
-        text = "bla bla bla"
-        history.append({"role":"user", "content":text})   # append user's message to conversation history
+        text = request.get_data().decode("utf-8")
+        temp_history.append({"role":"user", "content":text})   # append user's message to conversation history
 
         response = openai.ChatCompletion.create(          # generate GPT's response
             model="gpt-3.5-turbo",
-            messages=history
+            messages=temp_history
         )
         response_text = response['choices'][0]['message']['content']
 
-        history.append({"role":"assistant", "content":response_text}) # append GPT's response to conversation history
-        return response_text
+        temp_history.append({"role":"assistant", "content":response_text}) # append GPT's response to conversation history
+        tdict = {"message": response_text}
+        print(tdict["message"])
+        return json.dumps(tdict)
+
+@app.route("/resetassistant", methods=("GET", "POST"))
+def reset():
+    if request.method == "POST":
+        temp_history = history
+        print("GPT reset")
+        return json.dumps({"message": "reset"})

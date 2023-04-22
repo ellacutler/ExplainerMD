@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Button, Modal, Text, TextInput, Textarea } from "@mantine/core";
-import { isNotEmpty, useForm } from "@mantine/form";
+import { isNotEmpty, useForm} from "@mantine/form";
+import { DateTimePicker } from "@mantine/dates";
 
 const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, modelOutput}) => {
     // const [formData, setFormData] = useState({
@@ -23,8 +24,9 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
             PRESCRIBER: modelOutput && modelOutput.PRESCRIBER ? modelOutput.PRESCRIBER : "",
             PHARMACY: "",
             FREQUENCY: modelOutput && modelOutput.FREQUENCY ? modelOutput.FREQUENCY : "",
+            FREQUENCYN: 24,
             DOSAGE: modelOutput && modelOutput.DOSAGE ? modelOutput.DOSAGE : "",
-            TIMES: [],
+            START_TIME: new Date(),
             CONDITION: modelOutput && modelOutput.DISEASE ? modelOutput.DISEASE : "",
             NOTES: "",
           })
@@ -38,8 +40,9 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
             PRESCRIBER: "",
             PHARMACY: "",
             FREQUENCY: "",
+            FREQUENCYN: 24,
             DOSAGE: "",
-            TIMES: [],
+            START_TIME: new Date(),
             CONDITION: "",
             NOTES: "",
         },
@@ -73,7 +76,7 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
                     })}
                 >
                     <Text fz="xl" fw="700" mb="2rem">
-                        Enter Drug Information:
+                        Enter Medication Information:
                     </Text>
                 
                     
@@ -82,23 +85,19 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
                         label="Medication Name"
                         placeholder="Ex: Tylenol"
                         {...form.getInputProps("CHEMICAL")}
-                        size="lg"
 
                     />
-
+                    <br/>
                     <TextInput
                         label="Name of Doctor/Prescriber"
                         placeholder="Ex: Dr. John Smith"
                         {...form.getInputProps("PRESCRIBER")}
-                        size="lg"
                     />
 
                     <TextInput
-                        withAsterisk
                         label="Pharmacy"
                         placeholder="Ex: Walgreens"
                         {...form.getInputProps("PHARMACY")}
-                        size="lg"
                     />
 
                     <TextInput
@@ -106,31 +105,42 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
                         label="Dosage"
                         placeholder="Ex: 500mg"
                         {...form.getInputProps("DOSAGE")}
-                        size="lg"
                     />
-
+                    <br/>
+                    <DateTimePicker
+                        defaultValue={new Date()}
+                        withAsterisk
+                        radius="xl"
+                        label="Prescription Start Date and Time"
+                        placeholder="Pick date and time"
+                        {...form.getInputProps("START_TIME")}
+                        onChange={(value) => form.setFieldValue("START_TIME", value)}
+                    />
                     <TextInput
                         withAsterisk
                         label="Frequency"
                         placeholder="Ex: 2x a day"
                         {...form.getInputProps("FREQUENCY")}
-                        size="lg"
                     />
-
+                    <br/>
                     <TextInput
                         label="Condition"
                         placeholder="Ex: Headache"
                         {...form.getInputProps("CONDITION")}
-                        size="lg"
                     />
 
                     <Textarea
                         label="Additional Notes"
                         placeholder="Ex: Take with food"
                         {...form.getInputProps("NOTES")}
-                        size="lg"
                     />
-                    <Button type="submit">Add Drug</Button>
+                    <br/>
+                    <Button 
+                        type="submit"
+                        variant='outline'
+                    >
+                        Add Drug
+                    </Button>
                 </form>
                 
             </Modal>
