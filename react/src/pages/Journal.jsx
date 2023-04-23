@@ -41,8 +41,8 @@ const SymptomJournal = (props) => {
   // ok gotta use these in some sort of row thing
 
   return (
-    <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-      <div className="overflow-hidden border border-slate-200 md:rounded-lg">
+    <div className="inline-block min-w-full py-2 align-middle p-2">
+      <div className="overflow-hidden border border-slate-200 rounded-lg">
         <table className="min-w-full divide-y divide-slate-200">
           <thead className="bg-slate-50">
             <tr>

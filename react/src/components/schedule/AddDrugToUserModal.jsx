@@ -103,7 +103,7 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
                     <TextInput
                         withAsterisk
                         label="Dosage"
-                        placeholder="Ex: 500mg"
+                        placeholder="Ex: 2 tablets"
                         {...form.getInputProps("DOSAGE")}
                     />
                     <br/>
@@ -119,7 +119,7 @@ const AddDrugToUserModal = ({show, handleClose, handleSubmit, user, allUsers, mo
                     <TextInput
                         withAsterisk
                         label="Frequency"
-                        placeholder="Ex: 2x a day"
+                        placeholder="Ex: Twice a day"
                         {...form.getInputProps("FREQUENCY")}
                     />
                     <br/>
