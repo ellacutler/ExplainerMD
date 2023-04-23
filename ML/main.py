@@ -17,7 +17,7 @@ from PIL import Image
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
 openai.organization = "org-AanZ8UEwwQn4x89YMCu6n9dr"
 openai.api_key = os.getenv("OPENAI_API_KEY")
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -63,8 +63,9 @@ def ner_get():
 
 global history
 history = [
-           {"role": "user", "content": f"You are a health assistant. Given the symptoms that the user describes, come up with possible medical conditions and what type of doctor can address it."},
-           {"role": "system", "content": f"Hi there! I'm an AI symptom diagnosis assistant. Please tell me how you're feeling today, and I'll track these symptoms and do my best to provide an accurate assessment of them. To receive an assessment of your symptoms, please enter the word 'Diagnosis."},
+           {"role": "system", "content": f"You are a health assistant."},
+           {"role": "user", "content": f"You are a health assistant. Given the symptoms that I describe, come up with a possible medical condition and what type of doctor can address it. Be concise and do not call yourself an AI language model."},
+           {"role": "assistant", "content": f"Hi there! I'm an AI symptom diagnosis assistant. Please tell me how you're feeling today, and I'll track these symptoms and do my best to provide an accurate assessment of them."},
            ]
 
 global temp_history
