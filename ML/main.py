@@ -17,7 +17,7 @@ from PIL import Image
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = ""
 openai.organization = "org-AanZ8UEwwQn4x89YMCu6n9dr"
 openai.api_key = os.getenv("OPENAI_API_KEY")
 CORS(app, resources={r"/*": {"origins": "*"}})
