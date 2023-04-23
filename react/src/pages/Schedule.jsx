@@ -215,8 +215,20 @@ const Schedule = ({user, allUsers}) => {
         modelOutput={modelDrug}
       />
       {/* userdata.username */}
-      <h1 className={"text-3xl p-4 text-center"}> {allUsers && user ? "Hello, " + allUsers[user.uid].username : "Hello!"}  </h1> 
-      
+      <h1 className={h1styles}> {allUsers && user ? "Hello, " + allUsers[user.uid].username : "Hello!"}  </h1> 
+      {
+        !allUsers || !allUsers[user.uid].drugs || allUsers[user.uid].drugs.length === 0 ? (
+          <div>
+            <h3 className ={h3styles}> You have no scheduled drugs </h3>
+          </div>
+        ) : (
+          allUsers[user.uid].drugs.map((drug) => (
+            <ScheduledDrug 
+              key={drug.CHEMICAL}
+              drug={drug} />
+          ))
+        )
+      }
       <div class="p-2 flex justify-center items-center bg-[#cbd7e3]">
         <div class="h-auto  w-96 bg-white rounded-lg p-4">
           <p class="text-xl font-semibold mt-2 text-[#063c76]">Prescription Schedule</p>
@@ -229,8 +241,7 @@ const Schedule = ({user, allUsers}) => {
         </div>
       </div>
       <br />
-      <h1 className={"text-3xl p-4 text-center"}> Upload Image of Prescription</h1>
-   
+      <p>Upload and Display Image</p>      
       {/* <br />
       {allUsers && user && allUsers[user.uid].images && allUsers[user.uid].images.photoURL && (
         <div>
@@ -250,37 +261,29 @@ const Schedule = ({user, allUsers}) => {
         <Button type="submit">Add Drug from Image</Button>
       </form>
       */}
-      <div class="flex flex-col justify-center mt-8 px-8">
-          <div class="max-w-2xl rounded-lg shadow-xl bg-gray-50">
-              <form onSubmit={handleSubmit} class="m-4">
-                  <input type="file" onChange={handleFileChange} />
-                  <Button variant="outline" type="submit">Upload</Button>
-                </form>
-                <div className="flex justify-center items-center">
-                  {url && <img src={url} className="w-24 rounded-md p-2" alt="Uploaded image" />}
-                </div>
-          </div>
+      <div>
+        <form onSubmit={handleSubmit}>
+          <input type="file" onChange={handleFileChange} />
+          <Button variant="outline" type="submit">Upload</Button>
+        </form>
+        {url && <img src={url} alt="Uploaded image" />}
       </div>
-      <br/>
-      <div className="flex justify-center items-center">
-        <Button variant="outline" onClick={handleShowAddDrugModal}>Add Drug Manually</Button>
-      </div>
-      <br/>
-      <h1 className={"text-3xl p-4 text-center"}> Medication Details</h1>
 
-      {
-        !allUsers || !allUsers[user.uid].drugs || allUsers[user.uid].drugs.length === 0 ? (
-          <div>
-            <h3 className ={h3styles}> You have no scheduled drugs </h3>
-          </div>
-        ) : (
-          allUsers[user.uid].drugs.map((drug) => (
-            <ScheduledDrug 
-              key={drug.CHEMICAL}
-              drug={drug} />
-          ))
-        )
-      }
+      <br/>
+      
+      <Button variant="outline" onClick={handleShowAddDrugModal}>Add Drug</Button>
+      <br />
+      {/* <FileInput
+        label="Upload Image"
+        accept="image/png, image/jpeg"
+        onChange={(event) => {
+          setSelectedImage(event.target.files[0]);
+          handleUpload(event.target.files[0]);
+        }}
+      /> */}
+      <button 
+        onClick={() => {console.log(user); console.log(allUsers[user.uid]);}}
+      >Log</button>
       
     </div>
   );

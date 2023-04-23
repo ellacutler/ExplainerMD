@@ -27,7 +27,7 @@ const Home = (allUsers) => {
     <div className="grid grid-cols-1 place-items-center gap-4">
       <br> 
       </br>
-      <h1 className = "text-center text-4xl"> Hi! Welcome to ℞eMedi</h1>
+      <h1 className = "text-center text-4xl"> Hi! Welcome to "Explainer MD"</h1>
       <button onClick = {signInWithGoogle} className=" w-96 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full"> Sign in With Google </button>
       
     
